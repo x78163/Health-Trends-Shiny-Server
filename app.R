@@ -13,8 +13,16 @@ library(shiny)
 ui <- fluidPage(
    
    # Application title
-   titlePanel("Joe's Super Awesome App"),
-   
+   titlePanel("Let's get this Party Started!!!!"),
+   tabPanel("Home" , 
+            h1("Ubiqum Data Science Consultants", align = "center"),
+            HTML('<center><img src="http://cultofthepartyparrot.com/assets/sirocco.gif" style ="width="300", height="300"></center>'),
+            #HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1512060481/partyparrot_lcjgj2.gif" style ="width="300", height="300"></center>'),
+            #  HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1510907256/DS_logo_rmmtbo.png" style ="width="300", height="300"></center>'),
+            h3("Time to make your data party like a parrot!!!!!", align = "center"),
+            HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1510907481/headshot_foglex.png" style ="width="100", height="100"></center>')
+            
+   ),
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
