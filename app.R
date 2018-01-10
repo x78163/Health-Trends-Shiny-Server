@@ -13,7 +13,7 @@ library(shiny)
 ui <- fluidPage(
    
    # Application title
-   titlePanel("Let's get this Party Started!!!!"),
+   titlePanel("Let's get this Party Started!!!!!!!"),
    tabPanel("Home" , 
             h1("Ubiqum Data Science Consultants", align = "center"),
             HTML('<center><img src="http://cultofthepartyparrot.com/assets/sirocco.gif" style ="width="300", height="300"></center>'),
