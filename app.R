@@ -9,6 +9,7 @@
 #if(!require(gtrendsR)) install.packages("gtrendsR",repos = "http://cran.us.r-project.org")
 library(gtrendsR)
 library(shiny)
+library(prophet)
 
 # Define WebCrawl Variables
 
