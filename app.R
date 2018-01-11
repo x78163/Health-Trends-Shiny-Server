@@ -7,7 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 #if(!require(gtrendsR)) install.packages("gtrendsR",repos = "http://cran.us.r-project.org")
-install.packages('gtrendsR')
+library(gtrendsR)
 
 library(shiny)
 
