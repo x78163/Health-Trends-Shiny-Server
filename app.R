@@ -86,7 +86,8 @@ server <- function(input, output) {
     ds = test$interest_over_time$date
     y = test$interest_over_time$hits
   forecasting = data.frame(ds, y)  #set up our variables in a data frame
- predictRange = 100
+ predictRange = 30
+  predictRange = as.numeric(input$predict)
   prophetPredictions = prophet(forecasting)  #This step releases the wizard (generates model)
   future = make_future_dataframe(prophetPredictions, periods=predictRange) #Set the number of days (periods) you want to predict
   forecast = predict(prophetPredictions, future) # Unleash the wizard on the data dragon (applies model)
