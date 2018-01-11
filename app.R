@@ -16,11 +16,11 @@ library(shiny)
 googleGeo = "US-TN"
 googleTime= "today+5-y"
 
-narcotics <- read_csv("~/Ubiqum Data Science/Health-Trends-Shiny-Server/narcotics.csv", 
-                      col_names = FALSE)
+# narcotics <- read_csv("~/Ubiqum Data Science/Health-Trends-Shiny-Server/narcotics.csv", 
+#                       col_names = FALSE)
 
-test = gtrends(as.character(narcotics[1,]), geo = googleGeo, time = googleTime, gprop = c("web", "news", "images", "froogle", "youtube"),  hl = "en-US")
-
+#test = gtrends(as.character(narcotics[1,]), geo = googleGeo, time = googleTime, gprop = c("web", "news", "images", "froogle", "youtube"),  hl = "en-US")
+test = gtrends("fentanyl", geo = googleGeo, time = googleTime, gprop = c("web", "news", "images", "froogle", "youtube"),  hl = "en-US")
 # Begin Crawl
 
 
