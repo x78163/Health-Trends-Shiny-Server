@@ -8,8 +8,20 @@
 #
 #if(!require(gtrendsR)) install.packages("gtrendsR",repos = "http://cran.us.r-project.org")
 library(gtrendsR)
-
 library(shiny)
+
+# Define WebCrawl Variables
+
+googleGeo = "US-TN"
+googleTime= "today+5-y"
+
+narcotics <- read_csv("~/Ubiqum Data Science/Health-Trends-Shiny-Server/narcotics.csv", 
+                      col_names = FALSE)
+
+test = gtrends(as.character(narcotics[1,]), geo = googleGeo, time = googleTime, gprop = c("web", "news", "images", "froogle", "youtube"),  hl = "en-US")
+
+# Begin Crawl
+
 
 
 
@@ -42,12 +54,25 @@ ui <- fluidPage(
                      "Number of bins:",
                      min = 1,
                      max = 50,
+                     value = 30),
+         dateRangeInput("dateSelect", "Select Date Range:",
+                        start = "2007-01-01",
+                        end   = "2007-01-31"),
+         
+         
+         tags$br(),
+         HTML('<center><img src="http://iconbug.com/data/95/256/8696325e0e7407823058632e68fb5970.png" style ="width="75", height="100"></center>'),
+         tags$br(),
+         tags$br(),
+         sliderInput("predict", "Number of Days to Predict:",
+                     min = 0, max = 60, step = 1,
                      value = 30)
       ),
       
       # Show a plot of the generated distribution
       mainPanel(
-         plotOutput("distPlot")
+         plotOutput("drug"),
+         plotOutput("prophetPrediction")
       )
    )
 )
@@ -56,13 +81,31 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
    
-   output$distPlot <- renderPlot({
+  prophetInput <- reactive({
+    ds = test$interest_over_time$date
+    y = test$interest_over_time$hits
+  forecasting = data.frame(ds, y)  #set up our variables in a data frame
+ predictRange = 100
+  prophetPredictions = prophet(forecasting)  #This step releases the wizard (generates model)
+  future = make_future_dataframe(prophetPredictions, periods=predictRange) #Set the number of days (periods) you want to predict
+  forecast = predict(prophetPredictions, future) # Unleash the wizard on the data dragon (applies model)
+  plot(prophetPredictions, forecast, ylab = "Relative Interest", xlab = "Date", main = "30 Day Prediction with Prophet")
+  })
+  
+   output$drug <- renderPlot({
       # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      
-      # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+       x    <- faithful[, 2] 
+       bins <- seq(min(x), max(x), length.out = input$bins + 1)
+      # 
+      # # draw the histogram with the specified number of bins
+      # hist(x, breaks = bins, col = 'darkgray', border = 'white')
+     plot(test)
+   })
+   
+   output$prophetPrediction =  renderPlot({ 
+     
+     prophetInput()
+     
    })
 }
 
