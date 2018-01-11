@@ -23,6 +23,14 @@ ui <- fluidPage(
             HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1510907481/headshot_foglex.png" style ="width="100", height="100"></center>')
             
    ),
+   tabPanel("Presentation", 
+            
+            #---------> Code to Insert a Powerpoint Presentation-----------------------------------------------------------------------------------------------------------------------
+            
+            tags$iframe(style="height:50vw; width:90vw; scrolling=no", 
+                        src="https://onedrive.live.com/embed?cid=D091F528EDB75B0A&resid=D091F528EDB75B0A%2111092&authkey=AJlOeVwrPeQJKDc&em=2")),
+   # <iframe src="https://onedrive.live.com/embed?cid=D091F528EDB75B0A&resid=D091F528EDB75B0A%2111092&authkey=AJlOeVwrPeQJKDc&em=2" width="402" height="327" frameborder="0" scrolling="no"></iframe>
+   
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
