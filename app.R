@@ -9,7 +9,7 @@
 #if(!require(gtrendsR)) install.packages("gtrendsR",repos = "http://cran.us.r-project.org")
 library(gtrendsR)
 library(shiny)
-library(prophet)
+#library(prophet)
 
 # Define WebCrawl Variables
 
@@ -82,32 +82,32 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
    
-  prophetInput <- reactive({
-    ds = test$interest_over_time$date
-    y = test$interest_over_time$hits
-  forecasting = data.frame(ds, y)  #set up our variables in a data frame
- predictRange = 100
-  prophetPredictions = prophet(forecasting)  #This step releases the wizard (generates model)
-  future = make_future_dataframe(prophetPredictions, periods=predictRange) #Set the number of days (periods) you want to predict
-  forecast = predict(prophetPredictions, future) # Unleash the wizard on the data dragon (applies model)
-  plot(prophetPredictions, forecast, ylab = "Relative Interest", xlab = "Date", main = "30 Day Prediction with Prophet")
-  })
-  
-   output$drug <- renderPlot({
-      # generate bins based on input$bins from ui.R
-       x    <- faithful[, 2] 
-       bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      # 
-      # # draw the histogram with the specified number of bins
-      # hist(x, breaks = bins, col = 'darkgray', border = 'white')
-     plot(test)
-   })
-   
-   output$prophetPrediction =  renderPlot({ 
-     
-     prophetInput()
-     
-   })
+ #  prophetInput <- reactive({
+ #    ds = test$interest_over_time$date
+ #    y = test$interest_over_time$hits
+ #  forecasting = data.frame(ds, y)  #set up our variables in a data frame
+ # predictRange = 100
+ #  prophetPredictions = prophet(forecasting)  #This step releases the wizard (generates model)
+ #  future = make_future_dataframe(prophetPredictions, periods=predictRange) #Set the number of days (periods) you want to predict
+ #  forecast = predict(prophetPredictions, future) # Unleash the wizard on the data dragon (applies model)
+ #  plot(prophetPredictions, forecast, ylab = "Relative Interest", xlab = "Date", main = "30 Day Prediction with Prophet")
+ #  })
+ #  
+ #   output$drug <- renderPlot({
+ #      # generate bins based on input$bins from ui.R
+ #       x    <- faithful[, 2] 
+ #       bins <- seq(min(x), max(x), length.out = input$bins + 1)
+ #      # 
+ #      # # draw the histogram with the specified number of bins
+ #      # hist(x, breaks = bins, col = 'darkgray', border = 'white')
+ #     plot(test)
+ #   })
+ #   
+ #   output$prophetPrediction =  renderPlot({ 
+ #     
+ #     prophetInput()
+ #     
+ #   })
 }
 
 # Run the application 
