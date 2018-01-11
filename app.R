@@ -8,6 +8,8 @@
 #
 
 library(shiny)
+library(gtrendsR)
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
