@@ -15,7 +15,7 @@ ui <- fluidPage(
    # Application title
    titlePanel("Let's get this Party Started!!!!!!!"),
    tabPanel("Home" , 
-            h1("Hi Pretty Lady", align = "center"),
+            h1("Hello Ruben", align = "center"),
             HTML('<center><img src="http://cultofthepartyparrot.com/assets/sirocco.gif" style ="width="300", height="300"></center>'),
             #HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1512060481/partyparrot_lcjgj2.gif" style ="width="300", height="300"></center>'),
             #  HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1510907256/DS_logo_rmmtbo.png" style ="width="300", height="300"></center>'),
