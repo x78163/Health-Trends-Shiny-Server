@@ -6,9 +6,9 @@
 #
 #    http://shiny.rstudio.com/
 #
-
+if(!require(gtrendsR)) install.packages("gtrendsR",repos = "http://cran.us.r-project.org")
 library(shiny)
-library(gtrendsR)
+
 
 
 # Define UI for application that draws a histogram
