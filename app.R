@@ -109,23 +109,10 @@ plotInMin = inMin[2:ncol(inMin)]
 plotCurrent = melt(plotCurrent)
 plotOutMax = melt(plotOutMax)
 plotInMin = melt(plotInMin)
-
 plotCombi = plotCurrent
 plotCombi$inMin = plotInMin$value
 plotCombi$outMax = plotOutMax$value
 
-
-ggplot(plotCurrent, aes(variable, value)) +
-  geom_col()
-
-ggplot(plotCombi, aes(variable, outMax)) +
-  geom_col() + geom_col(aes(variable, inMin))
-plotCombi$inMin
-ggplot(plotInMin, aes(variable, value)) +
-  geom_col()
-
-ggplot(winner, aes(variable, value)) +
-  geom_col()
 
 #----------> Calculate y Axis Plot Limits --------------------------------
 maxPlot = which.min(outMax[2:ncol(outMax)])
@@ -150,10 +137,14 @@ to_plot <- data.frame(x=x,y1=y2,y2=y1, y3=y3)
 melted<-melt(to_plot, id="x")
 
 plot1 = ggplot(melted,aes(x=x,y=value,fill=variable)) + geom_bar(stat="identity",position = "identity", alpha=1)+ coord_cartesian(
-  ylim = c(minValuePlot-100, maxValuePlot+100))
+  ylim = c(minValuePlot-100, maxValuePlot+100))+ labs(x = "Exchanges", y="Bitcoin Value in $", title = "Overall Exchange Prices (Sell, Spot and Buy)")+ scale_fill_discrete(name="Prices with Fees", breaks=c("y1", "y2", "y3"),labels=c("Buying (In) Price", "Exchange Price", "Selling Price (Out)"))+
+geom_text((aes(label=value)), nudge_x = 0, nudge_y = 50,angle = 45,
+          check_overlap = T)
 
 plot2 = ggplot(winner,aes(x=name,y=value, fill=factor(name))) + geom_bar(stat="identity",position = "identity", alpha=1)+ coord_cartesian(
-  ylim = c(minValuePlot-100, maxValuePlot+100))
+  ylim = c(minValuePlot-100, maxValuePlot+100))+ labs(x = "Exchanges", y="Bitcoin Value in $", title = "Best Exchanges to Buy and Then Sell") + scale_fill_discrete(name="Exchanges", breaks=c(minName, maxName),labels=c("Buying Exchange", "Selling Exchange"))+
+  geom_text((aes(label=value)))
+
 
 ## app.R ##
 library(shinydashboard)
