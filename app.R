@@ -82,7 +82,27 @@ ui <- dashboardPage(
   
   dashboardSidebar(sidebarMenu(
     menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
-    menuItem("Widgets", tabName = "widgets", icon = icon("th"))
+    menuItem("Widgets", tabName = "widgets", icon = icon("th")),
+    tags$br(),
+    tags$br(),
+    tags$br(),
+    title = "Controls",
+    HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1510908400/Calendar_f5yruq.png" style ="width="60", height="20"></center>'),
+    tags$br(),
+    dateRangeInput("dateSelect", "Select Date Range:",
+                   start = Sys.Date()-30,
+                   end   = Sys.Date()),
+    
+    
+    tags$br(),
+    HTML('<center><img src="http://iconbug.com/data/95/256/8696325e0e7407823058632e68fb5970.png" style ="width="30", height="40"></center>'),
+    tags$br(),
+   
+    sliderInput("predict", "Number of Days to Predict:",
+                min = 0, max = 60, step = 1,
+                value = 30)
+    
+    
   )),
   
   ## Body content
@@ -93,25 +113,9 @@ ui <- dashboardPage(
               fluidRow(
                 box(plotOutput("drug", height = 250)),
                 
-                box(plotOutput("prophetPrediction", height = 250)),
+                box(plotOutput("prophetPrediction", height = 250))
                 
-                box(
-                  title = "Controls",
-                  HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1510908400/Calendar_f5yruq.png" style ="width="150", height="100"></center>'),
-                  tags$br(),
-                  dateRangeInput("dateSelect", "Select Date Range:",
-                                 start = Sys.Date()-30,
-                                 end   = Sys.Date()),
-                  
-                  
-                  tags$br(),
-                  HTML('<center><img src="http://iconbug.com/data/95/256/8696325e0e7407823058632e68fb5970.png" style ="width="75", height="100"></center>'),
-                  tags$br(),
-                  tags$br(),
-                  sliderInput("predict", "Number of Days to Predict:",
-                              min = 0, max = 60, step = 1,
-                              value = 30)
-                )
+
                 
               )
       ),
