@@ -22,7 +22,7 @@ test = gtrends("fentanyl", geo = googleGeo, time = googleTime, gprop = c("web", 
 # Begin Crawl
 
 ui <- dashboardPage(
-  dashboardHeader(title = "Basic dashboard", dropdownMenu(type = "messages",
+  dashboardHeader(title = "Community Health Dashboard", dropdownMenu(type = "messages",
                                                           messageItem(
                                                             from = "Sales Dept",
                                                             message = "Sales are steady this month."
@@ -42,7 +42,7 @@ ui <- dashboardPage(
   ),
   dropdownMenu(type = "notifications",
                notificationItem(
-                 text = "5 new users today",
+                 text = "5 searches for Quillen Today",
                  icon("users")
                ),
                notificationItem(
@@ -59,16 +59,16 @@ ui <- dashboardPage(
   
   dropdownMenu(type = "tasks", badgeStatus = "success",
                taskItem(value = 90, color = "green",
-                        "Documentation"
+                        "Behavioral"
                ),
                taskItem(value = 17, color = "aqua",
-                        "Project X"
+                        "Orthopedics"
                ),
                taskItem(value = 75, color = "yellow",
-                        "Server deployment"
+                        "Pediatrics"
                ),
                taskItem(value = 80, color = "red",
-                        "Overall project"
+                        "Cardio"
                )
   )
   
