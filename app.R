@@ -87,7 +87,7 @@ ui <- dashboardPage(
     tags$br(),
     tags$br(),
     title = "Controls",
-    HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1510908400/Calendar_f5yruq.png" style ="width="60", height="20"></center>'),
+    HTML('<center><img src="http://i.imgur.com/u1Xw3UG.png" style ="width="240", height="80"></center>'),
     tags$br(),
     dateRangeInput("dateSelect", "Select Date Range:",
                    start = Sys.Date()-30,
@@ -162,7 +162,7 @@ server <- function(input, output) {
       futureValue-presentValue
     }
     
-    plot(prophetPredictions, forecast)#+aes(xintercept=as.numeric(as.POSIXct("2017-01-01")))#+(ylab = "Relative Interest"+ xlab = "Date" + main = "30 Day Prediction with Prophet")#,coord_cartesian(ylim=c(0, 0.1)))
+    #plot(prophetPredictions, forecast)#+aes(xintercept=as.numeric(as.POSIXct("2017-01-01")))#+(ylab = "Relative Interest"+ xlab = "Date" + main = "30 Day Prediction with Prophet")#,coord_cartesian(ylim=c(0, 0.1)))
     
     
   })
