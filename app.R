@@ -22,7 +22,7 @@ bittrex <- fromJSON("https://bittrex.com/api/v1.1/public/getmarketsummary?market
 gemeni <- fromJSON("https://api.gemini.com/v1/pubticker/btcusd")
 bitstamp <- fromJSON("https://www.bitstamp.net/api/v2/ticker/btcusd/")
 bitfinex <- fromJSON("https://api.bitfinex.com/v1/pubticker/btcusd")
-cex <-fromJSON("https://cex.io/api/ticker/BTC/USD")
+#cex <-fromJSON("https://cex.io/api/ticker/BTC/USD")
 bitsquare <-fromJSON("https://markets.bisq.network/api/ticker?market=btc_usd")
 
 
@@ -32,7 +32,7 @@ coinbase = coinbase$data$amount
 bittrex = bittrex$result$Last
 gemeni = gemeni$last
 bitstamp = bitstamp$last
-cex = cex$last
+#cex = cex$last
 bitsquare = bitsquare$last
 bitfinex = bitfinex$last_price
 
@@ -43,7 +43,7 @@ current$coinbase = as.numeric(coinbase)
 current$bittrex =as.numeric(bittrex)
 current$gemeni = as.numeric(gemeni)
 current$bitstamp = as.numeric(bitstamp)
-current$cex =as.numeric(cex)
+#current$cex =as.numeric(cex)
 current$bitsquare = as.numeric(bitsquare)
 current$bitfinex = as.numeric(bitfinex)
 
@@ -57,7 +57,7 @@ inMin$coinbase = inMin$coinbase + (inMin$coinbase*as.numeric(fee[2,2]))
 inMin$bittrex = inMin$bittrex + (inMin$bittrex*as.numeric(fee[3,2]))
 inMin$gemeni = inMin$gemeni + (inMin$gemeni*as.numeric(fee[4,2]))
 inMin$bitstamp = inMin$bitstamp + (inMin$bitstamp*as.numeric(fee[5,2]))
-inMin$cex = inMin$cex + (inMin$cex*as.numeric(fee[6,2]))
+#inMin$cex = inMin$cex + (inMin$cex*as.numeric(fee[6,2]))
 inMin$bitsquare = inMin$bitsquare + (inMin$bitsquare*as.numeric(fee[7,2]))
 inMin$bitfinex = inMin$bitfinex + (inMin$bitfinex*as.numeric(fee[8,2]))
 
@@ -69,7 +69,7 @@ outMax$coinbase = outMax$coinbase - (outMax$coinbase *as.numeric(fee[2,3]))
 outMax$bittrex = outMax$bittrex - (outMax$bittrex *as.numeric(fee[3,3]))
 outMax$gemeni = outMax$gemeni - (outMax$gemeni *as.numeric(fee[4,3]))
 outMax$bitstamp = outMax$bitstamp - (outMax$bitstamp *as.numeric(fee[5,3]))
-outMax$cex = outMax$cex - (outMax$cex *as.numeric(fee[6,3]))
+#outMax$cex = outMax$cex - (outMax$cex *as.numeric(fee[6,3]))
 outMax$bitsquare = outMax$bitsquare - (outMax$bitsquare *as.numeric(fee[7,3]))
 outMax$bitfinex = outMax$bitfinex - (outMax$bitfinex *as.numeric(fee[8,3]))
 
@@ -173,7 +173,7 @@ server <- function(input, output) {
     gemeni <- fromJSON("https://api.gemini.com/v1/pubticker/btcusd")
     bitstamp <- fromJSON("https://www.bitstamp.net/api/v2/ticker/btcusd/")
     bitfinex <- fromJSON("https://api.bitfinex.com/v1/pubticker/btcusd")
-    cex <-fromJSON("https://cex.io/api/ticker/BTC/USD")
+   # cex <-fromJSON("https://cex.io/api/ticker/BTC/USD")
     bitsquare <-fromJSON("https://markets.bisq.network/api/ticker?market=btc_usd")
     
     
@@ -183,7 +183,7 @@ server <- function(input, output) {
     bittrex = bittrex$result$Last
     gemeni = gemeni$last
     bitstamp = bitstamp$last
-    cex = cex$last
+   # cex = cex$last
     bitsquare = bitsquare$last
     bitfinex = bitfinex$last_price
     
@@ -194,7 +194,7 @@ server <- function(input, output) {
     current$bittrex =as.numeric(bittrex)
     current$gemeni = as.numeric(gemeni)
     current$bitstamp = as.numeric(bitstamp)
-    current$cex =as.numeric(cex)
+  #  current$cex =as.numeric(cex)
     current$bitsquare = as.numeric(bitsquare)
     current$bitfinex = as.numeric(bitfinex)
     
@@ -208,7 +208,7 @@ server <- function(input, output) {
     inMin$bittrex = inMin$bittrex + (inMin$bittrex*as.numeric(fee[3,2]))
     inMin$gemeni = inMin$gemeni + (inMin$gemeni*as.numeric(fee[4,2]))
     inMin$bitstamp = inMin$bitstamp + (inMin$bitstamp*as.numeric(fee[5,2]))
-    inMin$cex = inMin$cex + (inMin$cex*as.numeric(fee[6,2]))
+   # inMin$cex = inMin$cex + (inMin$cex*as.numeric(fee[6,2]))
     inMin$bitsquare = inMin$bitsquare + (inMin$bitsquare*as.numeric(fee[7,2]))
     inMin$bitfinex = inMin$bitfinex + (inMin$bitfinex*as.numeric(fee[8,2]))
     
@@ -220,7 +220,7 @@ server <- function(input, output) {
     outMax$bittrex = outMax$bittrex - (outMax$bittrex *as.numeric(fee[3,3]))
     outMax$gemeni = outMax$gemeni - (outMax$gemeni *as.numeric(fee[4,3]))
     outMax$bitstamp = outMax$bitstamp - (outMax$bitstamp *as.numeric(fee[5,3]))
-    outMax$cex = outMax$cex - (outMax$cex *as.numeric(fee[6,3]))
+   # outMax$cex = outMax$cex - (outMax$cex *as.numeric(fee[6,3]))
     outMax$bitsquare = outMax$bitsquare - (outMax$bitsquare *as.numeric(fee[7,3]))
     outMax$bitfinex = outMax$bitfinex - (outMax$bitfinex *as.numeric(fee[8,3]))
     
