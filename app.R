@@ -138,12 +138,11 @@ melted<-melt(to_plot, id="x")
 
 plot1 = ggplot(melted,aes(x=x,y=value,fill=variable)) + geom_bar(stat="identity",position = "identity", alpha=1)+ coord_cartesian(
   ylim = c(minValuePlot-100, maxValuePlot+100))+ labs(x = "Exchanges", y="Bitcoin Value in $", title = "Overall Exchange Prices (Sell, Spot and Buy)")+ scale_fill_discrete(name="Prices with Fees", breaks=c("y1", "y2", "y3"),labels=c("Buying (In) Price", "Exchange Price", "Selling Price (Out)"))+
-geom_text((aes(label=value)), nudge_x = 0, nudge_y = 50,angle = 45,
-          check_overlap = T)
+geom_text((aes(label=value)),  nudge_y = 100, check_overlap = T)
 
 plot2 = ggplot(winner,aes(x=name,y=value, fill=factor(name))) + geom_bar(stat="identity",position = "identity", alpha=1)+ coord_cartesian(
   ylim = c(minValuePlot-100, maxValuePlot+100))+ labs(x = "Exchanges", y="Bitcoin Value in $", title = "Best Exchanges to Buy and Then Sell") + scale_fill_discrete(name="Exchanges", breaks=c(minName, maxName),labels=c("Buying Exchange", "Selling Exchange"))+
-  geom_text((aes(label=value)))
+  geom_text((aes(label=value, nudge_y = 100,)))
 
 
 ## app.R ##
