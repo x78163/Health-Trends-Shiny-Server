@@ -142,7 +142,7 @@ geom_text((aes(label=value)),  nudge_y = 100, check_overlap = T)
 
 plot2 = ggplot(winner,aes(x=name,y=value, fill=factor(name))) + geom_bar(stat="identity",position = "identity", alpha=1)+ coord_cartesian(
   ylim = c(minValuePlot-100, maxValuePlot+100))+ labs(x = "Exchanges", y="Bitcoin Value in $", title = "Best Exchanges to Buy and Then Sell") + scale_fill_discrete(name="Exchanges", breaks=c(minName, maxName),labels=c("Buying Exchange", "Selling Exchange"))+
-  geom_text((aes(label=value, nudge_y = 100,)))
+  geom_text((aes(label=value)),nudge_y = 100)
 
 
 ## app.R ##
