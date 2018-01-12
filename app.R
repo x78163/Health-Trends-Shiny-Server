@@ -83,6 +83,7 @@ ui <- dashboardPage(
   dashboardSidebar(sidebarMenu(
     menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
     menuItem("Widgets", tabName = "widgets", icon = icon("th")),
+    menuItem("Capybara Madness Minute!!", tabName = "capybara", icon = icon("th")),
     tags$br(),
     tags$br(),
     tags$br(),
@@ -123,6 +124,20 @@ ui <- dashboardPage(
       # Second tab content
       tabItem(tabName = "widgets",
               h2("Widgets tab content")
+      ),
+      
+      # Second tab content
+      tabItem(tabName = "capybara",
+              h2("Capybara Madness Minute!!"),
+              box(  HTML('<center><img src="https://media.giphy.com/media/Q7fa42S3mYLaU/giphy.gif" ></center>')  ),
+             
+              box(  HTML('<center><img src="https://media.giphy.com/media/hi2kPofVMW70k/giphy.gif" ></center>')  ),
+              box(  HTML('<center><img src="https://media.giphy.com/media/AQpUsaKCRD9gA/giphy.gif" ></center>')  ),
+              box(  HTML('<center><img src="https://media1.tenor.com/images/154e3281143218357bd228404b90ff2d/tenor.gif?itemid=9814827" ></center>')  ),
+              box(  HTML('<center><img src="https://media.giphy.com/media/12PmLACTptnrIQ/giphy.gif"></center>')  ),
+              box(  HTML('<center><img src="https://media.giphy.com/media/CqtroEpc7xgaI/giphy.gif"></center>')  ),
+              box(  HTML('<center><img src="https://thumbs.gfycat.com/DirectVibrantHeron-size_restricted.gif"></center>')  ),
+              box(  HTML('<center><img src="https://thumbs.gfycat.com/OffbeatComplexClumber-size_restricted.gif"></center>')  )
       )
     )
   )
