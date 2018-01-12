@@ -10,8 +10,8 @@ library(reshape2)
 #fee <- read_excel("C:/Users/josep/Desktop/Exchange Fees.xlsx")
 
 exchange = c("poloniex", "Coinbase", "Bittrex", "gemeni", "bitstamp", "cex", "bitsquare", "Bitfinex")
-In = c(.0015, .04, .0025, .0025, .0025, .0016, .002, .001)
-Out = c(.0025, .04, .0025, .0025, .0025, .0025, .002, .002)
+In = c(.0015, .04, .0025, .0025, .0025, .07, .002, .001)
+Out = c(.0025, .04, .0025, .0025, .0025, .07, .002, .002)
 fee = data.frame(exchange, In, Out)
 
 
