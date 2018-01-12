@@ -88,7 +88,7 @@ ui <- dashboardPage(
     tags$br(),
     tags$br(),
     title = "Controls",
-    HTML('<center><img src="http://i.imgur.com/u1Xw3UG.png" style ="width="240", height="80"></center>'),
+    HTML('<center><img src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/calendar-512.png", height="80"></center>'),
     tags$br(),
     dateRangeInput("dateSelect", "Select Date Range:",
                    start = Sys.Date()-30,
