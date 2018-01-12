@@ -150,7 +150,7 @@ plot2 = ggplot(winner,aes(x=name,y=value, fill=factor(name))) + geom_bar(stat="i
 library(shinydashboard)
 
 ui <- dashboardPage(
-  dashboardHeader(title = "Basic dashboard"),
+  dashboardHeader(title = "Bitcoin Exchange Calculator"),
   dashboardSidebar(),
   dashboardBody(
     # Boxes need to be put in a row (or column)
