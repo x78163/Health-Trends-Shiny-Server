@@ -1,208 +1,180 @@
+library(jsonlite)
+library(readxl)
+library(ggplot2)
+
+#---------> Import Fee Table-------------------
+
+fee <- read_excel("C:/Users/josep/Desktop/Exchange Fees.xlsx")
+
+#---------->  Collect data from all Exchanges--------------------------------
+poloniex <- fromJSON("https://poloniex.com/public?command=returnTicker")
+coinbase <- fromJSON("https://api.coinbase.com/v2/prices/spot?currency=USD")
+bittrex <- fromJSON("https://bittrex.com/api/v1.1/public/getmarketsummary?market=usdt-btc")
+gemeni <- fromJSON("https://api.gemini.com/v1/pubticker/btcusd")
+bitstamp <- fromJSON("https://www.bitstamp.net/api/v2/ticker/btcusd/")
+bitfinex <- fromJSON("https://api.bitfinex.com/v1/pubticker/btcusd")
+cex <-fromJSON("https://cex.io/api/ticker/BTC/USD")
+bitsquare <-fromJSON("https://markets.bisq.network/api/ticker?market=btc_usd")
+
+
+#---------->  Isolate all "Last" Values from JSON Data --------------------------------
+poloniex = poloniex$USDT_BTC$last
+coinbase = coinbase$data$amount
+bittrex = bittrex$result$Last
+gemeni = gemeni$last
+bitstamp = bitstamp$last
+cex = cex$last
+bitsquare = bitsquare$last
+bitfinex = bitfinex$last_price
+
+#---------->  Build Data Frame of all "Last" Values --------------------------------
+current <- data.frame(time=Sys.time())
+current$poloniex = as.numeric(poloniex)
+current$coinbase = as.numeric(coinbase)
+current$bittrex =as.numeric(bittrex)
+current$gemeni = as.numeric(gemeni)
+current$bitstamp = as.numeric(bitstamp)
+current$cex =as.numeric(cex)
+current$bitsquare = as.numeric(bitsquare)
+current$bitfinex = as.numeric(bitfinex)
+
+
+#----------> Split Current Into Min and Max Data Frames for Fee Application--------------
+
+inMin = current
+
+inMin$poloniex = inMin$poloniex + (inMin$poloniex*as.numeric(fee[1,2]))
+inMin$coinbase = inMin$coinbase + (inMin$coinbase*as.numeric(fee[2,2]))
+inMin$bittrex = inMin$bittrex + (inMin$bittrex*as.numeric(fee[3,2]))
+inMin$gemeni = inMin$gemeni + (inMin$gemeni*as.numeric(fee[4,2]))
+inMin$bitstamp = inMin$bitstamp + (inMin$bitstamp*as.numeric(fee[5,2]))
+inMin$cex = inMin$cex + (inMin$cex*as.numeric(fee[6,2]))
+inMin$bitsquare = inMin$bitsquare + (inMin$bitsquare*as.numeric(fee[7,2]))
+inMin$bitfinex = inMin$bitfinex + (inMin$bitfinex*as.numeric(fee[8,2]))
+
+
+outMax = current
+
+outMax$poloniex = outMax$poloniex - (outMax$poloniex*as.numeric(fee[1,3]))
+outMax$coinbase = outMax$coinbase - (outMax$coinbase *as.numeric(fee[2,3]))
+outMax$bittrex = outMax$bittrex - (outMax$bittrex *as.numeric(fee[3,3]))
+outMax$gemeni = outMax$gemeni - (outMax$gemeni *as.numeric(fee[4,3]))
+outMax$bitstamp = outMax$bitstamp - (outMax$bitstamp *as.numeric(fee[5,3]))
+outMax$cex = outMax$cex - (outMax$cex *as.numeric(fee[6,3]))
+outMax$bitsquare = outMax$bitsquare - (outMax$bitsquare *as.numeric(fee[7,3]))
+outMax$bitfinex = outMax$bitfinex - (outMax$bitfinex *as.numeric(fee[8,3]))
+
+#----------> Calculate Exchanges with Min and Max Values --------------------------------
+max = which.max(outMax[2:ncol(outMax)])
+min = which.min(inMin[2:ncol(inMin)])
+
+#----------> Calculate Column Index Values with Min and Max Values --------------------------------
+maxIndex = as.integer(max)+1
+minIndex = as.integer(min)+1
+
+#----------> Calculate BTC to USD Values with Min and Max Values --------------------------------
+minValue = as.numeric(inMin[,minIndex])
+maxValue = as.numeric(outMax[,maxIndex])
+
+#----------> Identify Exchanges with Min and Max Values --------------------------------
+minName = names(min)
+maxName = names(max)
+
+#----------> Create Winner Data Frame-------------------------------------------------------
+name <- c(maxName, minName)
+value <- c(maxValue, minValue)
+winner <- data.frame(name, value)
+
+
+#----------> Calcuate Price Delta & ROI between Min and Max --------------------------------
+
+delta = maxValue- minValue
+ROI = (((maxValue-minValue)/minValue)*100)
+
+#----------> Generate Output Message for User With Purchasing Advice --------------------------------
+text = paste("The highest yield is: $", round(delta, digits = 2), "If you buy 1x Bitcoin on",minName , " for: $",round(minValue, digits = 2), ", you can sell it on: ",maxName , " for: $", round(maxValue, digits = 2), ".  This is a:", round(ROI, digits=0),"% Return on Investment" )
+
+plotCurrent = current[2:ncol(current)]
+plotOutMax = outMax[2:ncol(outMax)]
+plotInMin = inMin[2:ncol(inMin)]
+plotCurrent = melt(plotCurrent)
+plotOutMax = melt(plotOutMax)
+plotInMin = melt(plotInMin)
+
+plotCombi = plotCurrent
+plotCombi$inMin = plotInMin$value
+plotCombi$outMax = plotOutMax$value
+
+
+ggplot(plotCurrent, aes(variable, value)) +
+  geom_col()
+
+ggplot(plotCombi, aes(variable, outMax)) +
+  geom_col() + geom_col(aes(variable, inMin))
+plotCombi$inMin
+ggplot(plotInMin, aes(variable, value)) +
+  geom_col()
+
+ggplot(winner, aes(variable, value)) +
+  geom_col()
+
+#----------> Calculate y Axis Plot Limits --------------------------------
+maxPlot = which.min(outMax[2:ncol(outMax)])
+minPlot = which.max(inMin[2:ncol(inMin)])
+
+#----------> Calculate Min and Max values for Plot Limits --------------------------------
+maxIndexPlot = as.integer(maxPlot)+1
+minIndexPlot = as.integer(minPlot)+1
+
+#----------> Calculate dollar values of min and max values for plot limits-----------------
+maxValuePlot = as.numeric(inMin[,minIndexPlot])
+minValuePlot = as.numeric(outMax[,maxIndexPlot])
+
+
+#------> Combined Plot---------------
+x = plotCombi$variable
+y2 = plotCombi$inMin
+y1 =plotCombi$value
+y3 = plotCombi$outMax
+
+to_plot <- data.frame(x=x,y1=y2,y2=y1, y3=y3)
+melted<-melt(to_plot, id="x")
+
+plot1 = ggplot(melted,aes(x=x,y=value,fill=variable)) + geom_bar(stat="identity",position = "identity", alpha=1)+ coord_cartesian(
+  ylim = c(minValuePlot-100, maxValuePlot+100))
+
+plot2 = ggplot(winner,aes(x=name,y=value, fill=factor(name))) + geom_bar(stat="identity",position = "identity", alpha=1)+ coord_cartesian(
+  ylim = c(minValuePlot-100, maxValuePlot+100))
+
 ## app.R ##
 library(shinydashboard)
-library(gtrendsR)
-library(shiny)
-library(prophet)
-
-# Define WebCrawl Variables
-
-googleGeo = "US-TN"
-googleTime= "today+5-y"  #pull trends from last five years
-# googleTime= "now 1-H" #pull last hour of trends
-# googleTime= "now 1-d"  # pull last day of trends
-# googleTime= "today 1-m"  # pull last month of thrends
-# googleTime= "2010-01-01 2010-04-03" #Pull trends from date range
-#googleTime= "all"  #pull all trends
-
-# narcotics <- read_csv("~/Ubiqum Data Science/Health-Trends-Shiny-Server/narcotics.csv", 
-#                       col_names = FALSE)
-
-#test = gtrends(c("bitcoin", "ethereum", "litecoin", "ripple", "monero"), geo = googleGeo, time = googleTime, gprop = c("web", "news", "images", "froogle", "youtube"),  hl = "en-US")
-test = gtrends("fentanyl", geo = googleGeo, time = googleTime, gprop = c("web", "news", "images", "froogle", "youtube"),  hl = "en-US")
-# Begin Crawl
 
 ui <- dashboardPage(
-  dashboardHeader(title = "Community Health Dashboard", dropdownMenu(type = "messages",
-                                                          messageItem(
-                                                            from = "Sales Dept",
-                                                            message = "Sales are steady this month."
-                                                          ),
-                                                          messageItem(
-                                                            from = "New User",
-                                                            message = "How do I register?",
-                                                            icon = icon("question"),
-                                                            time = "13:45"
-                                                          ),
-                                                          messageItem(
-                                                            from = "Support",
-                                                            message = "The new server is ready.",
-                                                            icon = icon("life-ring"),
-                                                            time = "2014-12-01"
-                                                          )
-  ),
-  dropdownMenu(type = "notifications",
-               notificationItem(
-                 text = "5 searches for Quillen Today",
-                 icon("users")
-               ),
-               notificationItem(
-                 text = "12 items delivered",
-                 icon("truck"),
-                 status = "success"
-               ),
-               notificationItem(
-                 text = "Server load at 86%",
-                 icon = icon("exclamation-triangle"),
-                 status = "warning"
-               )
-  ),
-  
-  dropdownMenu(type = "tasks", badgeStatus = "success",
-               taskItem(value = 90, color = "green",
-                        "Behavioral"
-               ),
-               taskItem(value = 17, color = "aqua",
-                        "Orthopedics"
-               ),
-               taskItem(value = 30, color = "yellow",
-                        "Oncology"
-               ),
-               taskItem(value = 10, color = "yellow",
-                        "Communicable Disease"
-               ),
-               taskItem(value = 75, color = "yellow",
-                        "Urology"
-               ),
-               taskItem(value = 80, color = "red",
-                        "Cardio"
-               )
-  )
-  
-  ),
-  
-  dashboardSidebar(sidebarMenu(
-    menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
-    menuItem("Widgets", tabName = "widgets", icon = icon("th")),
-    menuItem("Capybara Madness Minute!!", tabName = "capybara", icon = icon("th")),
-    tags$br(),
-    tags$br(),
-    tags$br(),
-    title = "Controls",
-    HTML('<center><img src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/calendar-512.png", height="80"></center>'),
-    tags$br(),
-    dateRangeInput("dateSelect", "Select Date Range:",
-                   start = Sys.Date()-30,
-                   end   = Sys.Date()),
-    
-    
-    tags$br(),
-    HTML('<center><img src="http://iconbug.com/data/95/256/8696325e0e7407823058632e68fb5970.png" style ="width="30", height="40"></center>'),
-    tags$br(),
-   
-    sliderInput("predict", "Number of Days to Predict:",
-                min = 0, max = 60, step = 1,
-                value = 30)
-    
-    
-  )),
-  
-  ## Body content
+  dashboardHeader(title = "Basic dashboard"),
+  dashboardSidebar(),
   dashboardBody(
-    tabItems(
-      # First tab content
-      tabItem(tabName = "dashboard",
-              fluidRow(
-                box(plotOutput("drug", height = 250)),
-                
-                box(plotOutput("prophetPrediction", height = 250))
-                
-
-                
-              )
-      ),
+    # Boxes need to be put in a row (or column)
+    fluidRow(
+      box(title = text),
+      box(plotOutput("plot1", height = 250)),
+      box(plotOutput("plot2", height = 250))
       
-      # Second tab content
-      tabItem(tabName = "widgets",
-              h2("Widgets tab content")
-      ),
-      
-      # Second tab content
-      tabItem(tabName = "capybara",
-              h2("Capybara Madness Minute!!"),
-              box(  HTML('<center><img src="https://media.giphy.com/media/Q7fa42S3mYLaU/giphy.gif" ></center>')  ),
-             
-              box(  HTML('<center><img src="https://media.giphy.com/media/hi2kPofVMW70k/giphy.gif" ></center>')  ),
-              box(  HTML('<center><img src="https://media.giphy.com/media/AQpUsaKCRD9gA/giphy.gif" ></center>')  ),
-              box(  HTML('<center><img src="https://media1.tenor.com/images/154e3281143218357bd228404b90ff2d/tenor.gif?itemid=9814827" ></center>')  ),
-              box(  HTML('<center><img src="https://media.giphy.com/media/12PmLACTptnrIQ/giphy.gif"></center>')  ),
-              box(  HTML('<center><img src="https://media.giphy.com/media/CqtroEpc7xgaI/giphy.gif"></center>')  ),
-              box(  HTML('<center><img src="https://thumbs.gfycat.com/DirectVibrantHeron-size_restricted.gif"></center>')  ),
-              box(  HTML('<center><img src="https://thumbs.gfycat.com/OffbeatComplexClumber-size_restricted.gif"></center>')  )
-      )
     )
   )
 )
 
 server <- function(input, output) {
-  set.seed(122)
-  histdata <- rnorm(500)
-  
-  prophetInput <- reactive({
-    ds = test$interest_over_time$date
-    y = test$interest_over_time$hits
-    forecasting = data.frame(ds, y)  #set up our variables in a data frame
-    predictRange = 30
-    predictRange = as.numeric(input$predict)
-    prophetPredictions = prophet(forecasting)  #This step releases the wizard (generates model)
-    future = make_future_dataframe(prophetPredictions, periods=predictRange) #Set the number of days (periods) you want to predict
-    forecast = predict(prophetPredictions, future) # Unleash the wizard on the data dragon (applies model)
-    forecast[1,]
-    
-    plotted = 0
-    plotted$ds = as.data.frame(forecast$ds)
-    plotted$predict = forecast$yhat
-    plotted =  as.data.frame(plotted)
-    plotted = tail(plotted, n=60)
-    # plot(plotted$forecast.ds, plotted$predict)
-    futureValue = plotted$predict[nrow(plotted)]
-    presentValue = plotted$predict[(nrow(plotted)-30)]
-    
-    if(futureValue>presentValue)
-    {
-      print("trending up")
-    }
-    if(presentValue>futureValue)
-    {
-      print("trending down")
-      futureValue-presentValue
-    }
-    
-    plot(prophetPredictions, forecast)#+aes(xintercept=as.numeric(as.POSIXct("2017-01-01")))#+(ylab = "Relative Interest"+ xlab = "Date" + main = "30 Day Prediction with Prophet")#,coord_cartesian(ylim=c(0, 0.1)))
-    
-    
-  })
-  
-  output$drug <- renderPlot({
-    # generate bins based on input$bins from ui.R
-    # x    <- faithful[, 2]
-    # bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    #
-    # # draw the histogram with the specified number of bins
-    # hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    plot(test)
-  })
-  
-  output$prophetPrediction =  renderPlot({
-    HTML('<center><img src="https://oxycodoneinformation.files.wordpress.com/2015/04/oxycodone.png" style ="width="300", height="300"></center>')
-    prophetInput()
-    
-  })
   
   
   output$plot1 <- renderPlot({
-    data <- histdata[seq_len(input$slider)]
-    hist(data)
+    plot1
   })
+  
+  output$plot2 <- renderPlot({
+    plot2
+  })
+  
+  
 }
 
 shinyApp(ui, server)
