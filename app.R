@@ -1,12 +1,5 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-#if(!require(gtrendsR)) install.packages("gtrendsR",repos = "http://cran.us.r-project.org")
+## app.R ##
+library(shinydashboard)
 library(gtrendsR)
 library(shiny)
 library(prophet)
@@ -14,103 +7,125 @@ library(prophet)
 # Define WebCrawl Variables
 
 googleGeo = "US-TN"
-googleTime= "today+5-y"
+googleTime= "today+5-y"  #pull trends from last five years
+# googleTime= "now 1-H" #pull last hour of trends
+# googleTime= "now 1-d"  # pull last day of trends
+# googleTime= "today 1-m"  # pull last month of thrends
+# googleTime= "2010-01-01 2010-04-03" #Pull trends from date range
+#googleTime= "all"  #pull all trends
 
 # narcotics <- read_csv("~/Ubiqum Data Science/Health-Trends-Shiny-Server/narcotics.csv", 
 #                       col_names = FALSE)
 
-#test = gtrends(as.character(narcotics[1,]), geo = googleGeo, time = googleTime, gprop = c("web", "news", "images", "froogle", "youtube"),  hl = "en-US")
+#test = gtrends(c("bitcoin", "ethereum", "litecoin", "ripple", "monero"), geo = googleGeo, time = googleTime, gprop = c("web", "news", "images", "froogle", "youtube"),  hl = "en-US")
 test = gtrends("fentanyl", geo = googleGeo, time = googleTime, gprop = c("web", "news", "images", "froogle", "youtube"),  hl = "en-US")
 # Begin Crawl
 
-
-
-
-# Define UI for application that draws a histogram
-ui <- fluidPage(
-  navbarPage(
-   # Application title
-   titlePanel("Let's get this Party Started!!!!!!!"),
-   tabPanel("Home" , 
-            h1("Hello Ruben", align = "center"),
-            HTML('<center><img src="http://cultofthepartyparrot.com/assets/sirocco.gif" style ="width="300", height="300"></center>'),
-            #HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1512060481/partyparrot_lcjgj2.gif" style ="width="300", height="300"></center>'),
-            #  HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1510907256/DS_logo_rmmtbo.png" style ="width="300", height="300"></center>'),
-            h3("Time to make your data party like a parrot!!!!!", align = "center"),
-            HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1510907481/headshot_foglex.png" style ="width="100", height="100"></center>')
-            
-   ),
-   tabPanel("Presentation", 
-            
-            #---------> Code to Insert a Powerpoint Presentation-----------------------------------------------------------------------------------------------------------------------
-            
-            tags$iframe(style="height:50vw; width:90vw; scrolling=no", 
-                        src="https://onedrive.live.com/embed?cid=D091F528EDB75B0A&resid=D091F528EDB75B0A%2111092&authkey=AJlOeVwrPeQJKDc&em=2")),
-   # <iframe src="https://onedrive.live.com/embed?cid=D091F528EDB75B0A&resid=D091F528EDB75B0A%2111092&authkey=AJlOeVwrPeQJKDc&em=2" width="402" height="327" frameborder="0" scrolling="no"></iframe>
-   
-   # Sidebar with a slider input for number of bins 
-   sidebarLayout(
-      sidebarPanel(
-         sliderInput("bins",
-                     "Number of bins:",
-                     min = 1,
-                     max = 50,
-                     value = 30),
-         dateRangeInput("dateSelect", "Select Date Range:",
-                        start = "2007-01-01",
-                        end   = "2007-01-31"),
-         
-         
-         tags$br(),
-         HTML('<center><img src="http://iconbug.com/data/95/256/8696325e0e7407823058632e68fb5970.png" style ="width="75", height="100"></center>'),
-         tags$br(),
-         tags$br(),
-         sliderInput("predict", "Number of Days to Predict:",
-                     min = 0, max = 60, step = 1,
-                     value = 30)
+ui <- dashboardPage(
+  dashboardHeader(title = "Basic dashboard"),
+  dashboardSidebar(sidebarMenu(
+    menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+    menuItem("Widgets", tabName = "widgets", icon = icon("th"))
+  )),
+  ## Body content
+  dashboardBody(
+    tabItems(
+      # First tab content
+      tabItem(tabName = "dashboard",
+              fluidRow(
+                box(plotOutput("drug", height = 250)),
+                
+                box(plotOutput("prophetPrediction", height = 250)),
+                
+                box(
+                  title = "Controls",
+                  HTML('<center><img src="http://res.cloudinary.com/x78163/image/upload/v1510908400/Calendar_f5yruq.png" style ="width="150", height="100"></center>'),
+                  tags$br(),
+                  dateRangeInput("dateSelect", "Select Date Range:",
+                                 start = Sys.Date()-30,
+                                 end   = Sys.Date()),
+                  
+                  
+                  tags$br(),
+                  HTML('<center><img src="http://iconbug.com/data/95/256/8696325e0e7407823058632e68fb5970.png" style ="width="75", height="100"></center>'),
+                  tags$br(),
+                  tags$br(),
+                  sliderInput("predict", "Number of Days to Predict:",
+                              min = 0, max = 60, step = 1,
+                              value = 30)
+                )
+                
+              )
       ),
       
-      # Show a plot of the generated distribution
-      mainPanel(
-         plotOutput("drug"),
-         plotOutput("prophetPrediction")
+      # Second tab content
+      tabItem(tabName = "widgets",
+              h2("Widgets tab content")
       )
-   )
-)
+    )
+  )
 )
 
-# Define server logic required to draw a histogram
 server <- function(input, output) {
-   
+  set.seed(122)
+  histdata <- rnorm(500)
+  
   prophetInput <- reactive({
     ds = test$interest_over_time$date
     y = test$interest_over_time$hits
-  forecasting = data.frame(ds, y)  #set up our variables in a data frame
- predictRange = 30
-  predictRange = as.numeric(input$predict)
-  prophetPredictions = prophet(forecasting)  #This step releases the wizard (generates model)
-  future = make_future_dataframe(prophetPredictions, periods=predictRange) #Set the number of days (periods) you want to predict
-  forecast = predict(prophetPredictions, future) # Unleash the wizard on the data dragon (applies model)
-  plot(prophetPredictions, forecast, ylab = "Relative Interest", xlab = "Date", main = "30 Day Prediction with Prophet")
+    forecasting = data.frame(ds, y)  #set up our variables in a data frame
+    predictRange = 30
+    predictRange = as.numeric(input$predict)
+    prophetPredictions = prophet(forecasting)  #This step releases the wizard (generates model)
+    future = make_future_dataframe(prophetPredictions, periods=predictRange) #Set the number of days (periods) you want to predict
+    forecast = predict(prophetPredictions, future) # Unleash the wizard on the data dragon (applies model)
+    forecast[1,]
+    
+    plotted = 0
+    plotted$ds = as.data.frame(forecast$ds)
+    plotted$predict = forecast$yhat
+    plotted =  as.data.frame(plotted)
+    plotted = tail(plotted, n=60)
+    # plot(plotted$forecast.ds, plotted$predict)
+    futureValue = plotted$predict[nrow(plotted)]
+    presentValue = plotted$predict[(nrow(plotted)-30)]
+    
+    if(futureValue>presentValue)
+    {
+      print("trending up")
+    }
+    if(presentValue>futureValue)
+    {
+      print("trending down")
+      futureValue-presentValue
+    }
+    
+    plot(prophetPredictions, forecast)#+aes(xintercept=as.numeric(as.POSIXct("2017-01-01")))#+(ylab = "Relative Interest"+ xlab = "Date" + main = "30 Day Prediction with Prophet")#,coord_cartesian(ylim=c(0, 0.1)))
+    
+    
   })
-
-   output$drug <- renderPlot({
-      # generate bins based on input$bins from ui.R
-       x    <- faithful[, 2]
-       bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      #
-      # # draw the histogram with the specified number of bins
-      # hist(x, breaks = bins, col = 'darkgray', border = 'white')
-     plot(test)
-   })
-
-   output$prophetPrediction =  renderPlot({
-
-     prophetInput()
-
-   })
+  
+  output$drug <- renderPlot({
+    # generate bins based on input$bins from ui.R
+    # x    <- faithful[, 2]
+    # bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    #
+    # # draw the histogram with the specified number of bins
+    # hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    plot(test)
+  })
+  
+  output$prophetPrediction =  renderPlot({
+    HTML('<center><img src="https://oxycodoneinformation.files.wordpress.com/2015/04/oxycodone.png" style ="width="300", height="300"></center>')
+    prophetInput()
+    
+  })
+  
+  
+  output$plot1 <- renderPlot({
+    data <- histdata[seq_len(input$slider)]
+    hist(data)
+  })
 }
 
-# Run the application 
-shinyApp(ui = ui, server = server)
-
+shinyApp(ui, server)
