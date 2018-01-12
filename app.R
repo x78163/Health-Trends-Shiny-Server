@@ -64,8 +64,14 @@ ui <- dashboardPage(
                taskItem(value = 17, color = "aqua",
                         "Orthopedics"
                ),
+               taskItem(value = 30, color = "yellow",
+                        "Oncology"
+               ),
+               taskItem(value = 10, color = "yellow",
+                        "Communicable Disease"
+               ),
                taskItem(value = 75, color = "yellow",
-                        "Pediatrics"
+                        "Urology"
                ),
                taskItem(value = 80, color = "red",
                         "Cardio"
