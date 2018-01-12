@@ -3,6 +3,7 @@ library(readxl)
 library(ggplot2)
 library(shinydashboard)
 library(shiny)
+library(reshape2)
 
 #---------> Import Fee Table-------------------
 
