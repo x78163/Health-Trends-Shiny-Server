@@ -85,6 +85,7 @@ ui <- dashboardPage(
     menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
     menuItem("Widgets", tabName = "widgets", icon = icon("th")),
     menuItem("Capybara Madness Minute!!", tabName = "capybara", icon = icon("th")),
+    a(h4("Go Home"), href = paste0("http://www.joe-data.com/")),
     tags$br(),
     tags$br(),
     tags$br(),
